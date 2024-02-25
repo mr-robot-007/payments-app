@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 mongoose
-  .connect("mongodb://localhost:27017/paytmdb")
-  .then(() => console.log("connected"));
+  .connect(
+    "mongodb+srv://anujgusain108:mrrobot007@cluster0.2h2iuwo.mongodb.net/paytmdb"
+  )
+  .then(() => console.log("connected to db"));
 
 const UserSchema = new Schema({
   username: {

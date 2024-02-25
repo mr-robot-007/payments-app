@@ -1,35 +1,24 @@
-import { Container } from "react-bootstrap";
-import { FaUserAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
+import Balance from "./Balance";
 import axios from "axios";
-
-import UserRow from "../components/UserRow";
-import Balance from "../components/Balance";
-import Header from "../components/Header";
-import { useState } from "react";
+import UserRow from "./UserRow";
 
 async function getUsers() {
   const response = await axios.get("http://localhost:3000/api/v1/user/bulk");
   // console.log(response.data);
   return response.data.user;
 }
-
-const Dashboard = function ({ children }) {
+function Container() {
   const { data: users, isLoading } = useQuery({
     queryKey: ["user"],
     queryFn: getUsers,
   });
-
-  console.log("users", users);
-  // console.log(x);
-  // getUsers();
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
+//   if (isLoading) {
+//     return null;
+//   }
 
   return (
-    <div className="">
-      <Header />
+    <>
       <Balance />
       <Container className="mt-4 px-3 flex flex-col gap-5 ">
         <div className=" flex-col flex gap-2">
@@ -41,13 +30,16 @@ const Dashboard = function ({ children }) {
           />
         </div>
         <div className="flex flex-col gap-5">
+          {/* {Array.from({ length: 4 }, (_, i) => i + 1).map((num) => (
+            <UserRow key={num} />
+          ))} */}
           {users.map((user) => (
             <UserRow data={user} key={user._id} />
           ))}
         </div>
       </Container>
-    </div>
+    </>
   );
-};
+}
 
-export { Dashboard };
+export default Container;

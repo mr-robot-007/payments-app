@@ -23,8 +23,13 @@ const UserSchema = zod.object({
 
 // const requiredUserSchema = User.required();
 
-router.get("/", authMiddleware, (req, res) => {
-  res.json({ msg: "all ok" });
+router.get("/", authMiddleware, async (req, res) => {
+  // res.json({ msg: "all ok" });
+  const user_info = await User.findOne(
+    { _id: req.userId },
+    "firstname lastname username"
+  );
+  res.json({ user_info });
 });
 
 router.post("/signup", async (req, res) => {
@@ -140,6 +145,9 @@ router.put("/", authMiddleware, async (req, res) => {
       message: "Incorrect inputs",
     });
   }
+
+  const existingUser = await User.findById({ _id: req.userId });
+
   const updatedUser = await User.updateOne(
     { _id: userId },
     {
@@ -156,6 +164,7 @@ router.put("/", authMiddleware, async (req, res) => {
 });
 
 router.get("/bulk", async (req, res) => {
+  console.log("/ bulk requested");
   const filter = req.query.filter || "";
   const users = await User.find({
     $or: [

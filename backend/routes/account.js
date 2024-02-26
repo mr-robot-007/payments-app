@@ -1,13 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { authMiddleware } = require("../middleware");
-const { Account } = require("../db");
+const { Account, User } = require("../db");
+const dotenv = require("dotenv");
+const { getCurrentDateTime } = require("../helpers/getCurrentDateTime");
 const router = express.Router();
 
+dotenv.config({ path: './.env' });
+
 mongoose
-  .connect(
-    "mongodb+srv://anujgusain108:mrrobot007@cluster0.2h2iuwo.mongodb.net/paytmdb"
-  )
+  .connect(process.env.DB_URL)
   .then(() => console.log("connected to account "));
 
 router.get("/balance", authMiddleware, async (req, res) => {
@@ -25,7 +27,9 @@ router.post("/transfer", authMiddleware, async (req, res) => {
   // console.log(req.userId);
   const toAccount = await Account.findOne({ userId: to });
   const fromAccount = await Account.findOne({ userId: req.userId });
-  // console.log(toAccount, fromAccount);
+  const toUser = await User.findById({ _id: to });
+  const fromUser = await User.findById({ _id: req.userId });
+  // console.log(toUser, fromUser);
   // console.log(amount);
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -50,16 +54,37 @@ router.post("/transfer", authMiddleware, async (req, res) => {
       .json({ status: "Failed", message: "Insufficient balance" });
     // throw new Error("Insufficient balance");
   }
+  const { formattedDate, formattedTime } = getCurrentDateTime();
+  console.log(formattedDate, formattedTime);
 
   try {
+    const sendersObject = {
+      transactionType: "sent",
+      counterpartyId: toAccount.userId,
+      counterpartyName: toUser.firstname + " " + toUser.lastname,
+      amount: amount,
+      date: formattedDate,
+      time: formattedTime,
+    };
+    const recieversObject = {
+      transactionType: "recieved",
+      counterpartyId: fromAccount.userId,
+      counterpartyName: fromUser.firstname + " " + fromUser.lastname,
+      amount: amount,
+      date: formattedDate,
+      time: formattedTime,
+    };
+    // console.log(sendersObject);
+    // console.log(recieversObject);
+
     await Account.updateOne(
       { userId: fromAccount.userId },
-      { $inc: { balance: -amount } }
+      { $inc: { balance: -amount }, $push: { transactions: sendersObject } }
     ).session(session);
 
     await Account.updateOne(
       { userId: toAccount.userId },
-      { $inc: { balance: amount } }
+      { $inc: { balance: amount }, $push: { transactions: recieversObject } }
     ).session(session);
 
     await session.commitTransaction();
@@ -73,6 +98,16 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     // throw err;
   } finally {
     session.endSession();
+  }
+});
+
+router.get("/transactions", authMiddleware, async (req, res) => {
+  try {
+    const data = await Account.findOne({ userId: req.userId });
+    res.json({ transactions: data.transactions });
+  } catch (err) {
+    console.log(err.message);
+    res.json({ message: "failed to fetch transactions" });
   }
 });
 

@@ -80,7 +80,7 @@ const Signin = () => {
             Password
           </label>
           <input
-            type="text"
+            type="password"
             id="password"
             className=" border-black-200 border-2 rounded-md px-2 py-2"
             {...register("password", { required: "This filed is required" })}

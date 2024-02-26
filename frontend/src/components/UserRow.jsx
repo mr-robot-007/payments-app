@@ -30,14 +30,14 @@ function UserRow({ data: { firstname, lastname, username, _id: id } }) {
           <h2>
             {firstname} {lastname}
           </h2>
-          <p className="text-blue-400 text-xs sm:text-sm">{username}</p>
+          <p className="text-blue-500 text-xs font-normal sm:text-sm">{username}</p>
         </div>
       </div>
       <Modal>
         <Modal.Open opens="sendmoney">
           <Button
             opens="sendmoney"
-            className="bg-black text-white p-3 rounded-xl hover:bg-gray-500 transition-all hover:p-4"
+            className="bg-blue-500 text-white p-3 rounded-xl hover:bg-gray-500 transition-all hover:p-4"
           >
             Send Money
           </Button>

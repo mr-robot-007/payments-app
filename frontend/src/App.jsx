@@ -30,6 +30,9 @@ function App() {
               secondary: "black",
             },
           },
+          style: {
+            textAlign: "center",
+          },
         }}
       />
       <BrowserRouter>

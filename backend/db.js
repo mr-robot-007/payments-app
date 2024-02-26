@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const dotenv = require("dotenv");
 
-mongoose
-  .connect(
-    "mongodb+srv://anujgusain108:mrrobot007@cluster0.2h2iuwo.mongodb.net/paytmdb"
-  )
-  .then(() => console.log("connected to db"));
+const { Schema } = mongoose;
+dotenv.config({ path: "./.env" });
+
+mongoose.connect(process.env.DB_URL).then(() => console.log("connected to db"));
 
 const UserSchema = new Schema({
   username: {
@@ -36,6 +35,33 @@ const UserSchema = new Schema({
   },
 });
 
+const transactionSchema = new Schema({
+  transactionType: {
+    type: String, // "received" or "sent"
+    required: true,
+  },
+  counterpartyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  counterpartyName: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+  time: {
+    type: String,
+    required: true,
+  },
+});
+
 const accountSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -46,6 +72,7 @@ const accountSchema = new Schema({
     type: Number,
     required: true,
   },
+  transactions: [transactionSchema],
 });
 
 const User = mongoose.model("User", UserSchema);

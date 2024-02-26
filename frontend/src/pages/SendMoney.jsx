@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 import toast, { Toaster } from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useBalance } from "../hooks/useBalance";
 
 const SendMoney = function ({ id, name, username }) {
+  const { balance, isLoadingBalance } = useBalance();
   const [amount, setAmount] = useState(null);
   const queryClient = useQueryClient();
   const { close } = useContext(ModalContext);
@@ -33,7 +35,8 @@ const SendMoney = function ({ id, name, username }) {
       queryClient.invalidateQueries({ queryKey: ["balance"] });
       close();
     } catch (err) {
-      toast.error("Transfer failed");
+      console.log(err);
+      toast.error(`Oops! Transfer failed \n ${err.response.data.message}`);
       // console.log("response data", response.data.message);
     }
   }
@@ -62,9 +65,13 @@ const SendMoney = function ({ id, name, username }) {
           className="border-2 p-2 rounded-lg"
           onChange={(e) => setAmount(e.target.value)}
         />
+        <p className={` ${amount > balance ? "block" : "hidden"} text-red-500`}>
+          Insufficient Balance
+        </p>
         <button
-          className="w-full bg-green-500 p-2 text-xl text-white rounded-lg"
+          className={`w-full bg-green-500 p-2 text-xl text-white rounded-lg disabled:bg-gray-400`}
           onClick={(e) => handleClick(e)}
+          disabled={Number(amount) > balance}
         >
           Initiate transfer
         </button>

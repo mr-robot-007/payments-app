@@ -1,11 +1,13 @@
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import PiggyBlue from "../assets/PiggyBlue.png";
 import { FaUserAlt } from "react-icons/fa";
 import { useUser } from "../hooks/useUser";
 import { TbLogout } from "react-icons/tb";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 import useOutsideClick from "../hooks/useOutsideClick";
 
 function Sidebar({ logout }) {
@@ -34,25 +36,30 @@ function Header() {
   function handleClick() {
     localStorage.removeItem("token");
     toast.success("User logged out.");
-    queryClient.invalidateQueries([])
+    queryClient.invalidateQueries([]);
     navigate("/signin");
-    
   }
 
   return (
     <>
-      <header className="flex justify-between sm:px-3 sm:py-4 px-1 py-2  bg-gray-300">
-        <h1 className="font-bold sm:text-3xl text-2xl">Payments App</h1>
+      <header className="flex justify-between items-center sm:px-3 sm:py-4 px-1 py-2  bg-blue-500 text-white">
+        {/* <h1 className="font-bold sm:text-3xl text-2xl">PayMe</h1> */}
+        <img
+          src={PiggyBlue}
+          alt="Piggy Wallet"
+          onClick={() => navigate("/")}
+          className="sm:h-14 h-8 object-contain"
+        />
         <div className="flex gap-4 text-xl font-bold items-center sm:px-2 px-1">
           <div>
             <div className="text-right text-lg sm:text-2xl">
               Hello, {isLoading ? "Loading..." : userInfo.firstname}
             </div>
-            <p className="sm:text-sm text-xs text-blue-500">
-              {isLoading ? "Loading..." : userInfo.username}
+            <p className="sm:text-sm text-xs text-gray-300 text-center">
+              {isLoading ? "Loading..." : userInfo?.username}
             </p>
           </div>
-          <div className="bg-cyan-400 sm:p-3 p-2 rounded-full">
+          <div className="bg-green-400 sm:p-3 p-2 rounded-full">
             {<FaUserAlt onClick={() => setOpen((x) => !x)} />}
           </div>
           <TbLogout

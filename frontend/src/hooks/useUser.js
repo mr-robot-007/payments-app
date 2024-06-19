@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+
+const backendurl = import.meta.env.VITE_BACKEND_URL;
 async function getUser() {
   try {
-    const response = await axios.get("http://localhost:3000/api/v1/user", {
+    const response = await axios.get(`${backendurl}/api/v1/user`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

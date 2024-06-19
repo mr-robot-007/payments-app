@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import Heading from "../ui/Heading";
 
+
+const backendurl = import.meta.env.VITE_BACKEND_URL;
+
 const Signup = () => {
   const {
     register,
@@ -14,7 +17,7 @@ const Signup = () => {
   const navigate = useNavigate();
   async function onSubmit({ email, firstName, lastName, password }) {
     const response = await axios.post(
-      "http://localhost:3000/api/v1/user/signup",
+      `${backendurl}/api/v1/user/signup`,
       {
         username: email,
         firstname: firstName,

@@ -5,6 +5,9 @@ import { Button } from "react-bootstrap";
 import Heading from "../ui/Heading";
 import { useEffect, useState } from "react";
 
+
+const backendurl = import.meta.env.VITE_BACKEND_URL;
+
 const Signin = () => {
   const [loginErr, setLoginErr] = useState("");
   const {
@@ -18,7 +21,7 @@ const Signin = () => {
   async function onSubmit({ email, password }) {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/user/signin",
+        `${backendurl}/api/v1/user/signin`,
         { username: email, password }
       );
       console.log("backend called");
@@ -37,7 +40,7 @@ const Signin = () => {
       const token = `Bearer ${localStorage.getItem("token")}`;
       console.log(token);
       const { response } = await axios.post(
-        "http://localhost:3000/api/v1/user/signin",
+        `${backendurl}/api/v1/user/signin`,
         {},
         {
           headers: {

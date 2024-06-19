@@ -10,6 +10,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useBalance } from "../hooks/useBalance";
 
+const backendurl = import.meta.env.VITE_BACKEND_URL;
+
 const SendMoney = function ({ id, name, username }) {
   const { balance, isLoadingBalance } = useBalance();
   const [amount, setAmount] = useState(null);
@@ -20,7 +22,7 @@ const SendMoney = function ({ id, name, username }) {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/account/transfer",
+        `${backendurl}/api/v1/account/transfer`,
         {
           to: id,
           amount: Number(amount),

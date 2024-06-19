@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+const backendurl = import.meta.env.VITE_BACKEND_URL;
+
 async function getBalance() {
   // console.log(localStorage.getItem("token"));
   try {
     const response = await axios.get(
-      "http://localhost:3000/api/v1/account/transactions",
+      `${backendurl}/api/v1/account/transactions`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

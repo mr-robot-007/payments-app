@@ -4,8 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import Spinner from "../ui/Spinner";
 import { useSearchParams } from "react-router-dom";
 
+const backendurl = import.meta.env.VITE_BACKEND_URL;
+
+
 async function getUsers() {
-  const response = await axios.get("http://localhost:3000/api/v1/user/bulk");
+  const response = await axios.get(`${backendurl}/api/v1/user/bulk`);
   // console.log(response.data);
   return response.data.user;
 }
